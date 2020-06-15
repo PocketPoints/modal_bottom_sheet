@@ -117,6 +117,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
     @required this.expanded,
     this.bounce = false,
     RouteSettings settings,
+    this.onOpened,
   })  : assert(expanded != null),
         assert(isDismissible != null),
         assert(enableDrag != null),
@@ -130,6 +131,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
   final bool isDismissible;
   final bool enableDrag;
   final ScrollController scrollController;
+  final Function(BuildContext context) onOpened;
 
   final AnimationController secondAnimationController;
 
@@ -162,6 +164,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
       Animation<double> secondaryAnimation) {
     // By definition, the bottom sheet is aligned to the bottom of the page
     // and isn't exposed to the top padding of the MediaQuery.
+    if (onOpened != null) onOpened(context);
     Widget bottomSheet = MediaQuery.removePadding(
       context: context,
       // removeTop: true,
