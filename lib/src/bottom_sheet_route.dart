@@ -17,6 +17,7 @@ class _ModalBottomSheet<T> extends StatefulWidget {
     this.scrollController,
     this.expanded = false,
     this.enableDrag = true,
+    this.onClosed,
   })  : assert(expanded != null),
         assert(enableDrag != null),
         super(key: key);
@@ -27,6 +28,7 @@ class _ModalBottomSheet<T> extends StatefulWidget {
   final bool enableDrag;
   final AnimationController secondAnimationController;
   final ScrollController scrollController;
+  final Function(BuildContext context) onClosed;
 
   @override
   _ModalBottomSheetState<T> createState() => _ModalBottomSheetState<T>();
@@ -92,6 +94,7 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
             onClosing: () {
               if (widget.route.isCurrent) {
                 Navigator.of(context).pop();
+                if (widget.onClosed != null) widget.onClosed(context);
               }
             },
             builder: widget.route.builder,
@@ -118,6 +121,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
     this.bounce = false,
     RouteSettings settings,
     this.onOpened,
+    this.onClosed,
   })  : assert(expanded != null),
         assert(isDismissible != null),
         assert(enableDrag != null),
@@ -132,6 +136,10 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
   final bool enableDrag;
   final ScrollController scrollController;
   final Function(BuildContext context) onOpened;
+
+  /// Only gets called if you dismiss via swiping
+  ///
+  final Function(BuildContext context) onClosed;
 
   final AnimationController secondAnimationController;
 
@@ -175,6 +183,7 @@ class ModalBottomSheetRoute<T> extends PopupRoute<T> {
         scrollController: scrollController,
         bounce: bounce,
         enableDrag: enableDrag,
+        onClosed: onClosed,
       ),
     );
     return bottomSheet;
